@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
-import urllib.request, os
-import argparse
-import json
-from urllib import request
+import urllib.request, os, argparse, json
+
+# test dataset with subdirs: https://doi.org/10.5878/331q-3p13
 
 def main():
   parser = argparse.ArgumentParser(
@@ -22,8 +21,6 @@ def main():
     os.makedirs(desitnation)
 
   print("📂",desitnation)
-
-  # test dataset: https://doi.org/10.5878/331q-3p13
 
   url = get_redirect_url(args.url)
   json = get_schema_org(url)
@@ -55,7 +52,7 @@ class bcolors:
   UNDERLINE = '\033[4m'
 
 def get_redirect_url(url):
-  r = request.urlopen(url)
+  r = urllib.request.urlopen(url)
   return r.geturl()
 
 def get_schema_org(url):
@@ -70,7 +67,7 @@ def show_progress(block_num, block_size, total_size):
 
 def download_file(url, target):
   url = url + "&noLog=true"
-  request.urlretrieve(url, target, show_progress)
+  urllib.request.urlretrieve(url, target, show_progress)
 
 def sizeof_fmt(num, suffix="B"):
   for unit in ("", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"):
