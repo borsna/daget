@@ -30,7 +30,7 @@ def main():
 
   for file in files:
     total_size += file['size']
-    print("📄", bcolors.OKBLUE, sizeof_fmt(file['size']), bcolors.ENDC, "\t", file['name'])
+    print("📄", bcolors.OKBLUE, size_as_string(file['size']), bcolors.ENDC, "\t", file['name'])
     file_path = os.path.join(desitnation, file['name'])
     file_dir = os.path.dirname(file_path)
     
@@ -39,7 +39,7 @@ def main():
 
     download_file(file['url'], file_path)
 
-  print("🗃️ ", bcolors.OKGREEN, sizeof_fmt(total_size), bcolors.ENDC, " downloaded ")
+  print("🗃️ ", bcolors.OKGREEN, size_as_string(total_size), bcolors.ENDC, " downloaded ")
 
 class bcolors:
   HEADER = '\033[95m'
@@ -68,7 +68,6 @@ def get_file_list(url):
   elif 'figshare' in url_parsed.hostname:
     id = url_parsed.path.split('/')[-2]
     version = url_parsed.path.split('/')[-1]
-    print("FÄGSJ*RS")
     return get_file_list_figshare(id, version)
   else:
     return get_file_list_schema_org(url)
@@ -124,18 +123,18 @@ def show_progress(block_num, block_size, total_size):
   print(bcolors.OKGREEN, "⬇️", round(block_num * block_size / total_size *100, 1), "%", bcolors.ENDC, end="\r")
 
 def download_file(url, target):
-  #url = url + "&noLog=true"  # for test only, disable logging when dowloading
+  #url = url + "&noLog=true"  # for test only, disable logging when dowloading from SND
   opener = urllib.request.build_opener()
   opener.addheaders = [('User-agent', 'Mozilla/5.0'), ('Accept', '*/*')]
   urllib.request.install_opener(opener)
   urllib.request.urlretrieve(url, target, show_progress)
 
-def sizeof_fmt(num, suffix="B"):
+def size_as_string(bytes, suffix="B"):
   for unit in ("", "Ki", "Mi", "Gi", "Ti", "Pi", "Ei", "Zi"):
-    if abs(num) < 1024.0:
-      return f"{num:3.1f}{unit}{suffix}"
-    num /= 1024.0
-  return f"{num:.1f}Yi{suffix}"
+    if abs(bytes) < 1024.0:
+      return f"{bytes:3.1f}{unit}{suffix}"
+    bytes /= 1024.0
+  return f"{bytes:.1f}Yi{suffix}"
 
 if __name__ == "__main__":
     main()
