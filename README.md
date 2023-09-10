@@ -15,6 +15,8 @@ Download dataset via DOI or landing page url:
 * SND - https://snd.se/catalogue
 * Zenodo - https://zenodo.org
 
+## Semi-suported respositories 
+* Figshare - https://su.figshare.com & https://figshare.scilifelab.se (more testing needed)
 
 ## Improve the script
 

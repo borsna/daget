@@ -61,12 +61,17 @@ def get_redirect_url(url):
 
 def get_file_list(url):
   url_parsed = urllib.parse.urlparse(url)
-  match url_parsed.hostname:
-    case 'zenodo.org':
-      id = url_parsed.path.split('/')[-1]
-      return get_file_list_zenodo(id)
-    case _:
-      return get_file_list_schema_org(url)
+
+  if url_parsed.hostname == 'zenodo.org':
+    id = url_parsed.path.split('/')[-1]
+    return get_file_list_zenodo(id)
+  elif 'figshare' in url_parsed.hostname:
+    id = url_parsed.path.split('/')[-2]
+    version = url_parsed.path.split('/')[-1]
+    print("FÄGSJ*RS")
+    return get_file_list_figshare(id, version)
+  else:
+    return get_file_list_schema_org(url)
     
 def get_file_list_schema_org(url):
   try:
@@ -87,8 +92,8 @@ def get_file_list_schema_org(url):
   return files
 
 def get_file_list_zenodo(id):
-  url = "https://zenodo.org/api/records/" + id
-  r=requests.get(url, headers={'Host': 'localhost', 'User-Agent' : 'daget', 'Accept' : '*/*'})
+  url = "https://zenodo.org/api/records/{id}".format(id = id)
+  r = requests.get(url, headers={'Host': 'localhost', 'User-Agent' : 'daget', 'Accept' : '*/*'})
   meta = r.json()
   
   files = []
@@ -98,6 +103,20 @@ def get_file_list_zenodo(id):
       'url'  : file['links']['self'],
       'size' : file['size'],
       'name' : file['key']
+    })
+  return files
+
+def get_file_list_figshare(id, version):
+  url = "https://api.figshare.com/v2/articles/{id}/versions/{version}".format(id = id, version = version)
+  r = requests.get(url, headers={'Host': 'localhost', 'User-Agent' : 'daget', 'Accept' : '*/*'})
+  meta = r.json()
+  files = []
+
+  for file in meta['files']:
+    files.append({
+      'url'  : file['download_url'],
+      'size' : file['size'],
+      'name' : file['name']
     })
   return files
 
