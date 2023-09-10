@@ -5,13 +5,13 @@ import urllib.request, requests, os, argparse, json, urllib.parse
 
 def main():
   parser = argparse.ArgumentParser(
-              prog='dget',
-              description='download dataset via doi or landing page url',
-              epilog='To improve or report a bug goto github.com/bla/bla'
+            prog='daget',
+            description='Download dataset via DOI or landing page url',
+            epilog='To improve or report a bug https://github.com/borsna/daget'
   )
 
-  parser.add_argument('url')
-  parser.add_argument('destination') 
+  parser.add_argument('url', help="URL to the dataset (lanmding page or DOI)")
+  parser.add_argument('destination', help="Full or relative path to destination directory") 
 
   args = parser.parse_args()
 
@@ -92,7 +92,7 @@ def get_file_list_zenodo(id):
   meta = r.json()
   
   files = []
-  
+
   for file in meta['files']:
     files.append({
       'url'  : file['links']['self'],
