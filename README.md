@@ -1,6 +1,8 @@
 # 🗃️ DaGet
 
-S imple utility script to download datasets from data respositories.
+Simple utility script to download datasets from data respositories.
+
+⚠️ __script is in early development and needs testing__ ⚠️ 
 
 ## Usage
 
