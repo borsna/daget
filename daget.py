@@ -63,14 +63,19 @@ def get_file_list(url):
   url_parsed = urllib.parse.urlparse(url)
   match url_parsed.hostname:
     case 'zenodo.org':
-      return get_file_list_zenodo(url)
+      id = url_parsed.path.split('/')[-1]
+      return get_file_list_zenodo(id)
     case _:
       return get_file_list_schema_org(url)
     
 def get_file_list_schema_org(url):
-  r=requests.get(url, headers={'User-Agent' : 'daget', 'Accept' : 'application/ld+json'})
-  schema_org = r.json()
-
+  try:
+    r=requests.get(url, headers={'User-Agent' : 'daget', 'Accept' : 'application/ld+json'})
+    schema_org = r.json()
+  except:
+    r=requests.get(url, headers={'Host': 'daget', 'User-Agent' : 'daget', 'Accept' : 'application/ld+json'})
+    schema_org = r.json()
+  
   files = []
   for file in schema_org['distribution']:
     files.append({
@@ -81,14 +86,29 @@ def get_file_list_schema_org(url):
   
   return files
 
-def get_file_list_zenodo(url):
-  return []
+def get_file_list_zenodo(id):
+  url = "https://zenodo.org/api/records/" + id
+  r=requests.get(url, headers={'Host': 'localhost', 'User-Agent' : 'daget', 'Accept' : '*/*'})
+  meta = r.json()
+  
+  files = []
+  
+  for file in meta['files']:
+    files.append({
+      'url'  : file['links']['self'],
+      'size' : file['size'],
+      'name' : file['key']
+    })
+  return files
 
 def show_progress(block_num, block_size, total_size):
   print(bcolors.OKGREEN, "⬇️", round(block_num * block_size / total_size *100, 1), "%", bcolors.ENDC, end="\r")
 
 def download_file(url, target):
-  url = url + "&noLog=true"  # for test only, disable logging when dowloading
+  #url = url + "&noLog=true"  # for test only, disable logging when dowloading
+  opener = urllib.request.build_opener()
+  opener.addheaders = [('User-agent', 'Mozilla/5.0'), ('Accept', '*/*')]
+  urllib.request.install_opener(opener)
   urllib.request.urlretrieve(url, target, show_progress)
 
 def sizeof_fmt(num, suffix="B"):
