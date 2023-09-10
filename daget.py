@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import urllib.request, os, argparse, json
+import urllib.request, requests, os, argparse, json, urllib.parse
 
 # test dataset with subdirs: https://doi.org/10.5878/331q-3p13
 
@@ -23,22 +23,23 @@ def main():
   print("📂",desitnation)
 
   url = get_redirect_url(args.url)
-  json = get_schema_org(url)
+  print("🔗 landing page: ", url)
+  files = get_file_list(url)
 
   total_size = 0
 
-  for file in json['distribution']:
-    total_size += file['contentSize']
-    print("📄",file['name'], bcolors.OKBLUE, sizeof_fmt(file['contentSize']), bcolors.ENDC)
+  for file in files:
+    total_size += file['size']
+    print("📄", bcolors.OKBLUE, sizeof_fmt(file['size']), bcolors.ENDC, "\t", file['name'])
     file_path = os.path.join(desitnation, file['name'])
     file_dir = os.path.dirname(file_path)
     
     if not os.path.exists(file_dir):
       os.makedirs(file_dir)
 
-    download_file(file['contentUrl'], file_path)
+    download_file(file['url'], file_path)
 
-  print("🗃️ total downloaded: ", bcolors.OKGREEN, sizeof_fmt(total_size), bcolors.ENDC)
+  print("🗃️ ", bcolors.OKGREEN, sizeof_fmt(total_size), bcolors.ENDC, " downloaded ")
 
 class bcolors:
   HEADER = '\033[95m'
@@ -52,21 +53,42 @@ class bcolors:
   UNDERLINE = '\033[4m'
 
 def get_redirect_url(url):
+  opener = urllib.request.build_opener()
+  opener.addheaders = [('User-Agent', 'daget')]
+  urllib.request.install_opener(opener)
   r = urllib.request.urlopen(url)
   return r.geturl()
 
-def get_schema_org(url):
-  opener = urllib.request.build_opener()
-  opener.addheaders = [('Accept', 'application/ld+json')]
-  urllib.request.install_opener(opener)
-  r = urllib.request.urlopen(url)
-  return json.loads(r.read())
+def get_file_list(url):
+  url_parsed = urllib.parse.urlparse(url)
+  match url_parsed.hostname:
+    case 'zenodo.org':
+      return get_file_list_zenodo(url)
+    case _:
+      return get_file_list_schema_org(url)
+    
+def get_file_list_schema_org(url):
+  r=requests.get(url, headers={'User-Agent' : 'daget', 'Accept' : 'application/ld+json'})
+  schema_org = r.json()
+
+  files = []
+  for file in schema_org['distribution']:
+    files.append({
+      'url'  : file['contentUrl'],
+      'size' : file['contentSize'],
+      'name' : file['name']
+    })
+  
+  return files
+
+def get_file_list_zenodo(url):
+  return []
 
 def show_progress(block_num, block_size, total_size):
   print(bcolors.OKGREEN, "⬇️", round(block_num * block_size / total_size *100, 1), "%", bcolors.ENDC, end="\r")
 
 def download_file(url, target):
-  url = url + "&noLog=true"
+  url = url + "&noLog=true"  # for test only, disable logging when dowloading
   urllib.request.urlretrieve(url, target, show_progress)
 
 def sizeof_fmt(num, suffix="B"):
