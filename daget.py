@@ -10,7 +10,7 @@ def main():
             epilog='To improve or report a bug https://github.com/borsna/daget'
   )
 
-  parser.add_argument('url', help="URL to the dataset (lanmding page or DOI)")
+  parser.add_argument('url', help="URL/DOI to the dataset")
   parser.add_argument('destination', help="Full or relative path to destination directory") 
 
   args = parser.parse_args()
@@ -20,17 +20,18 @@ def main():
   if not os.path.exists(desitnation):
     os.makedirs(desitnation)
 
-  print("📂",desitnation)
+  print("destination:  ", desitnation)
 
   url = get_redirect_url(args.url)
-  print("🔗 landing page: ", url)
+  print("landing page: ", url)
   files = get_file_list(url)
 
   total_size = 0
 
+  print(bcolors.BOLD, "size", "\t", "path", bcolors.ENDC)
   for file in files:
     total_size += file['size']
-    print("📄", bcolors.OKBLUE, size_as_string(file['size']), bcolors.ENDC, "\t", file['name'])
+    print(bcolors.OKBLUE, size_as_string(file['size']).strip(), bcolors.ENDC, file['name'])
     file_path = os.path.join(desitnation, file['name'])
     file_dir = os.path.dirname(file_path)
     
@@ -39,7 +40,7 @@ def main():
 
     download_file(file['url'], file_path)
 
-  print("🗃️ ", bcolors.OKGREEN, size_as_string(total_size), bcolors.ENDC, " downloaded ")
+  print(bcolors.OKGREEN, bcolors.BOLD, size_as_string(total_size), bcolors.ENDC, "downloaded ")
 
 class bcolors:
   HEADER = '\033[95m'
@@ -53,6 +54,10 @@ class bcolors:
   UNDERLINE = '\033[4m'
 
 def get_redirect_url(url):
+  # if url provided is a shorthand doi (TODO: check with regex)
+  if not url.startswith(('http://', 'https://')):
+    url = 'https://doi.org/' + url
+
   opener = urllib.request.build_opener()
   opener.addheaders = [('User-Agent', 'daget')]
   urllib.request.install_opener(opener)
@@ -120,10 +125,10 @@ def get_file_list_figshare(id, version):
   return files
 
 def show_progress(block_num, block_size, total_size):
-  print(bcolors.OKGREEN, "⬇️", round(block_num * block_size / total_size *100, 1), "%", bcolors.ENDC, end="\r")
+  print(bcolors.OKGREEN, round(block_num * block_size / total_size *100, 1), "%", bcolors.ENDC, end="\r")
 
 def download_file(url, target):
-  #url = url + "&noLog=true"  # for test only, disable logging when dowloading from SND
+  url = url + "&noLog=true"  # for test only, disable logging when dowloading from SND
   opener = urllib.request.build_opener()
   opener.addheaders = [('User-agent', 'Mozilla/5.0'), ('Accept', '*/*')]
   urllib.request.install_opener(opener)
