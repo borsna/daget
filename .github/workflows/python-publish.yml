@@ -16,8 +16,8 @@ permissions:
   contents: read
 
 jobs:
-  pypi-publish:
-    name: upload release to PyPI
+  build:
+    name: Build package
     runs-on: ubuntu-latest
     # Specifying a GitHub environment is optional, but strongly encouraged
     environment: release
@@ -36,5 +36,21 @@ jobs:
           pip install -U build setuptools wheel twine
       - name: Build package
         run: python setup.py sdist bdist_wheel
+      - uses: actions/upload-artifact@v3
+        with:
+          path: ./dist   
+  pypi-publish:
+    needs: ['build']
+    name: upload release to PyPI
+    runs-on: ubuntu-latest
+    # Specifying a GitHub environment is optional, but strongly encouraged
+    environment: release
+    permissions:
+      # IMPORTANT: this permission is mandatory for trusted publishing
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v3
       - name: Publish package distributions to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages_dir: artifact/
