@@ -7,7 +7,7 @@ setup(
     url='https://github.com/borsna/daget',
     license='MIT',
     author='Olof Olsson',
-    author_email='your-email@example.com',
+    author_email='borsna@gmail.com',
     python_requires='>=3.6',
     description='Download dataset via DOI or landing page url',
     install_requires=[

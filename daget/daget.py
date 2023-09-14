@@ -128,7 +128,6 @@ def show_progress(block_num, block_size, total_size):
   print(bcolors.OKGREEN, round(block_num * block_size / total_size *100, 1), "%", bcolors.ENDC, end="\r")
 
 def download_file(url, target):
-  url = url + "&noLog=true"  # for test only, disable logging when dowloading from SND
   opener = urllib.request.build_opener()
   opener.addheaders = [('User-agent', 'Mozilla/5.0'), ('Accept', '*/*')]
   urllib.request.install_opener(opener)
