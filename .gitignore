@@ -1,0 +1,28 @@
+# .gitignore
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+*.egg
+*.so
+*.swp
+
+# Directories
+.venv/
+.env/
+.vscode/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# PyCharm
+.idea/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
