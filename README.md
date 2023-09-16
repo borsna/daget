@@ -4,6 +4,16 @@ Simple utility script to download datasets from data respositories.
 
 ⚠️ __script is in early development and needs testing__ ⚠️ 
 
+## Installation
+
+![PyPI](https://img.shields.io/pypi/v/daget)
+
+to install daget using pip: 
+
+```
+pip install daget
+```
+
 ## Usage
 
 Download dataset via DOI or landing page url:
