@@ -1,4 +1,6 @@
-import urllib
+import urllib, urllib.error
+from exceptions import RepoError, ResolveError
+
 
 def get_redirect_url(url):
   # if url provided is a shorthand doi (TODO: check with regex)
@@ -8,9 +10,12 @@ def get_redirect_url(url):
   opener = urllib.request.build_opener()
   opener.addheaders = [('User-Agent', 'daget')]
   urllib.request.install_opener(opener)
-  r = urllib.request.urlopen(url)
-  return r.geturl()
-    
+  try:  
+    r = urllib.request.urlopen(url)
+    return r.geturl()
+  except urllib.error.HTTPError:
+    raise ResolveError("url not found") 
+  
 def download_file(url, target):
   opener = urllib.request.build_opener()
   opener.addheaders = [('User-agent', 'Mozilla/5.0'), ('Accept', '*/*')]

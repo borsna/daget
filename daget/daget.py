@@ -2,6 +2,7 @@
 import os, argparse
 from utils import *
 from repos import get_file_list_from_repo
+from exceptions import ResolveError, RepoError
 
 # test dataset with subdirs: https://doi.org/10.5878/331q-3p13
 
@@ -24,8 +25,14 @@ def main():
 
   print("destination:  ", desitnation)
 
-  url = get_redirect_url(args.url)
+  try:
+    url = get_redirect_url(args.url)
+  except ResolveError as err:
+    print(bcolors.FAIL, "error resolving ", args.url, bcolors.ENDC)
+    exit(1)
+  
   print("landing page: ", url)
+
   files = get_file_list_from_repo(url)
 
   total_size = 0
