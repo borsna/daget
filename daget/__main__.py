@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 import os, argparse
-from utils import *
-from repos import get_file_list_from_repo
-from exceptions import ResolveError, RepoError
+from daget.utils import *
+from daget.repos import get_file_list_from_repo
+from daget.exceptions import ResolveError, RepoError
 
 # test dataset with subdirs: https://doi.org/10.5878/331q-3p13
 
