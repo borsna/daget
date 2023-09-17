@@ -1,6 +1,6 @@
 [project]
 name = "daget"
-version = "0.3"
+version = "0.4"
 description = "Download dataset via DOI or landing page url"
 authors = [
     { name = "Olof Olsson", email = "borsna@gmail.com" }
@@ -20,7 +20,7 @@ dependencies = ["requests"]
 requires-python = ">=3.6"
 
 [project.scripts]
-datahugger = "daget.__main__:main"
+daget = "daget.__main__:main"
 
 [build-system]
 requires = ["setuptools>=61.0"]

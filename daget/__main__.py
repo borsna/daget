@@ -15,29 +15,35 @@ def main():
 
   parser.add_argument('url', help="URL/DOI to the dataset")
   parser.add_argument('destination', help="Full or relative path to destination directory") 
+  parser.add_argument("--list-only", action="store_true", help="Skip download")
 
   args = parser.parse_args()
 
+  # get doi/url and resolve to landing page
+  try:
+    url = get_redirect_url(args.url)
+  except ResolveError as err:
+    print(bcolors.FAIL, f'error resolving {args.url}', bcolors.ENDC)
+    exit(1)
+  
+  print(f'landing page: {url}')
+
+  # get desitnation directory and create directory
   desitnation = os.path.realpath(args.destination)
 
   if not os.path.exists(desitnation):
     os.makedirs(desitnation)
+  else:
+    if len(os.listdir(desitnation)) != 0:
+      print(bcolors.FAIL, f'{desitnation} must be a empty directory or new directory path', bcolors.ENDC)
+      exit(1)
 
-  print("destination:  ", desitnation)
-
-  try:
-    url = get_redirect_url(args.url)
-  except ResolveError as err:
-    print(bcolors.FAIL, "error resolving ", args.url, bcolors.ENDC)
-    exit(1)
-  
-  print("landing page: ", url)
+  print(f'destination: {desitnation}')
 
   files = get_file_list_from_repo(url)
 
   total_size = 0
 
-  print(bcolors.BOLD, "size", "\t", "path", bcolors.ENDC)
   for file in files:
     total_size += file['size']
     print(bcolors.OKBLUE, size_as_string(file['size']).strip(), bcolors.ENDC, file['name'])
@@ -46,8 +52,8 @@ def main():
     
     if not os.path.exists(file_dir):
       os.makedirs(file_dir)
-
-    download_file(file['url'], file_path)
+    if(not args.list_only):
+      download_file(file['url'], file_path)
 
   print(bcolors.OKGREEN, bcolors.BOLD, size_as_string(total_size), bcolors.ENDC, "downloaded ")
 

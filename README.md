@@ -2,6 +2,8 @@
 
 Simple utility to download datasets from data respositories.
 
+The goal of this project is to explore machine readable metadata and learn more about writing python packages.
+
 ⚠️ __script is in early development and needs testing__ ⚠️ 
 
 ## Installation
@@ -32,6 +34,10 @@ or short form doi:
 ## Semi-suported respositories 
 * Figshare - https://su.figshare.com & https://figshare.scilifelab.se (more testing needed)
 
+## Alternatives
+
+* [datahugger](https://github.com/J535D165/datahugger/) - wider repository suport
+
 ## Improve the script
 
 Adding suport for additional repositories requires test cases and investigation arround how to get file metadata from the landing page.
@@ -41,6 +47,6 @@ Please help by testing and reporting [issues](https://github.com/borsna/daget/is
 ## TODO
 
 - [ ] Add error handling
-- [ ] Check empty destination directory
+- [x] Check empty destination directory
 - [ ] Improve documentation
 - [x] Package script for pip

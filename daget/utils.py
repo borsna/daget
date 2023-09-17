@@ -1,5 +1,5 @@
 import urllib, urllib.error
-from exceptions import RepoError, ResolveError
+from daget.exceptions import RepoError, ResolveError
 
 
 def get_redirect_url(url):
@@ -14,7 +14,7 @@ def get_redirect_url(url):
     r = urllib.request.urlopen(url)
     return r.geturl()
   except urllib.error.HTTPError:
-    raise ResolveError("url not found") 
+    raise ResolveError(f"{url} not found") 
   
 def download_file(url, target):
   opener = urllib.request.build_opener()
