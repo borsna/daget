@@ -26,6 +26,21 @@ or short form doi:
 
 `daget 10.5878/331q-3p13 ./destination`
 
+### Example
+```text
+$ daget 10.7910/DVN/LFH4H8 ./test
+destination:   /home/user/test
+landing page:  https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/LFH4H8
+ 355.4KiB  Annex.pdf
+ 115.6KiB  List of items for measuring conceptions of democracy.csv
+ 81.1KiB  List of items for measuring conceptions of democracy.xlsx
+ 11.5KiB  Script - Part 1 Conceptions of democracy.R
+ 3.0KiB  Script - Part 2 Analyze items used to measure conceptions of democracy.R
+ 73.3KiB  Spreadsheet - Conceptions of democracy 10-2021.csv
+ 64.9KiB  Spreadsheet - Conceptions of democracy 10-2021.xlsx
+ 704.8KiB  downloaded 
+```
+
 ## Suported data respositories (confirmed)
 * Dataverse - https://dataverse.harvard.edu
 * SND - https://snd.se/catalogue
@@ -42,7 +57,7 @@ or short form doi:
 
 Adding suport for additional repositories requires test cases and investigation arround how to get file metadata from the landing page.
 
-Please help by testing and reporting [issues](https://github.com/borsna/daget/issues)!!
+Please help by testing and reporting [issues](https://github.com/borsna/daget/issues)
 
 ## TODO
 
