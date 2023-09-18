@@ -41,12 +41,12 @@ landing page:  https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7
  704.8KiB  downloaded 
 ```
 
-## Suported data respositories (confirmed)
+## Supported data respositories (confirmed)
 * Dataverse - https://dataverse.harvard.edu
 * SND - https://snd.se/catalogue
 * Zenodo - https://zenodo.org
 
-## Semi-suported respositories 
+## Semi-supported respositories 
 * Figshare - https://su.figshare.com & https://figshare.scilifelab.se (more testing needed)
 
 ## Alternatives
