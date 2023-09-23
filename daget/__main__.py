@@ -15,7 +15,7 @@ def main():
 
   parser.add_argument('url', help="URL/DOI to the dataset")
   parser.add_argument('destination', help="Full or relative path to destination directory") 
-  parser.add_argument("--list-only", action="store_true", help="Skip download")
+  parser.add_argument("-l", "--list-only", action="store_true", help="Skip download")
 
   args = parser.parse_args()
 

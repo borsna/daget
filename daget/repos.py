@@ -1,4 +1,5 @@
-import requests, urllib
+import requests, urllib, json.decoder
+from bs4 import BeautifulSoup
 
 def get_file_list_from_repo(url):
   url_parsed = urllib.parse.urlparse(url)
@@ -14,20 +15,36 @@ def get_file_list_from_repo(url):
     return get_file_list_schema_org(url)
 
 def get_file_list_schema_org(url):
+  daget_headers={'User-Agent' : 'daget', 'Accept' : 'application/ld+json'}
+  
+  result = requests.get(url, headers=daget_headers)
+    
+  # retry with host header 
+  if not result.ok:
+    daget_headers['Host'] = 'localhost'
+    result = requests.get(url, headers=daget_headers)
+  
   try:
-    r=requests.get(url, headers={'User-Agent' : 'daget', 'Accept' : 'application/ld+json'})
-    schema_org = r.json()
+    schema_org = result.json()
   except:
-    r=requests.get(url, headers={'Host': 'daget', 'User-Agent' : 'daget', 'Accept' : 'application/ld+json'})
-    schema_org = r.json()
+    result = requests.get(url)
+    soup = BeautifulSoup(result.text, "html.parser")
+    text = "".join(soup.find('script', {'type':'application/ld+json'}).contents)
+    
+    schema_org = json.loads(text)
+  
+  schema_files = schema_org['distribution']
+  if not isinstance(schema_files, list):
+    schema_files = [schema_files]
   
   files = []
-  for file in schema_org['distribution']:
-    files.append({
-      'url'  : file['contentUrl'],
-      'size' : file['contentSize'],
-      'name' : file['name']
-    })
+  for f in schema_files:
+    file={
+      'url'  : f.get('contentUrl', None),
+      'size' : f.get('contentSize', None),
+      'name' : f.get('name', None)
+    }
+    files.append(file)
   
   return files
 
