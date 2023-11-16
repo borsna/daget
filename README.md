@@ -62,6 +62,12 @@ Adding suport for additional repositories requires test cases and investigation 
 
 Please help by testing and reporting [issues](https://github.com/borsna/daget/issues)
 
+## Development
+
+* Check out this repository and open a terminal in this directory
+* Install dependecies: `pip install pyproject.toml`
+* Run the module without installing it: `python3 -m daget`
+
 ## TODO
 
 - [ ] Add error handling
