@@ -1,20 +1,39 @@
+import re
+import socket
 import urllib, urllib.error
 from daget.exceptions import RepoError, ResolveError
 
 
 def get_redirect_url(url):
   # if url provided is a shorthand doi (TODO: check with regex)
-  if not url.startswith(('http://', 'https://')):
+  if not re.match(r'^https?://', url):
     url = 'https://doi.org/' + url
 
   opener = urllib.request.build_opener()
   opener.addheaders = [('User-Agent', 'daget')]
   urllib.request.install_opener(opener)
-  try:  
-    r = urllib.request.urlopen(url)
-    return r.geturl()
-  except urllib.error.HTTPError:
-    raise ResolveError(f"{url} not found") 
+  
+  try:
+    response = urllib.request.urlopen(url)
+    return response.geturl()
+
+  except urllib.error.HTTPError as e:
+      # Catch HTTP errors and extract relevant information
+      error_message = f"HTTPError: {e.code} - {e.reason}"
+      raise ResolveError(f"{url} not found. {error_message}")
+
+  except urllib.error.URLError as e:
+      # Catch URL errors (e.g., network issues) and provide relevant information
+      if isinstance(e.reason, str):
+          error_message = f"URLError: {e.reason}"
+      else:
+          error_message = f"URLError: {str(e.reason)}"
+
+      # Additional handling for socket.gaierror
+      if isinstance(e.reason, socket.gaierror):
+          error_message += f", errno: {e.reason.errno}, strerror: {e.reason.strerror}"
+
+      raise ResolveError(f"Error connecting to {url}. {error_message}")
   
 def download_file(url, target):
   opener = urllib.request.build_opener()
