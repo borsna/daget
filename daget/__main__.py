@@ -22,8 +22,15 @@ def main():
   # get doi/url and resolve to landing page
   try:
     url = get_redirect_url(args.url)
+
+    if get_file_list_from_repo(url) is None:
+      raise RepoError(f'Landing page is not supported {url}')
   except ResolveError as err:
-    print(bcolors.FAIL, f'error resolving {args.url}', bcolors.ENDC)
+    print(bcolors.FAIL, f'Error resolving {args.url}: {err}', bcolors.ENDC)
+    exit(1)
+  except Exception as e:
+    # Catch any other unexpected exceptions, including URLError
+    print(bcolors.FAIL, f'{e}', bcolors.ENDC)
     exit(1)
   
   print(f'landing page: {url}')
@@ -37,7 +44,7 @@ def main():
     if len(os.listdir(desitnation)) != 0:
       print(bcolors.FAIL, f'{desitnation} must be a empty directory or new directory path', bcolors.ENDC)
       exit(1)
-
+      
   print(f'destination: {desitnation}')
 
   files = get_file_list_from_repo(url)
