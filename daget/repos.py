@@ -39,9 +39,13 @@ def get_file_list_schema_org(url):
   
   files = []
   for f in schema_files:
+    size = f.get('contentSize', None)
+    if isinstance(size, str) and size.lower().endswith('b'):
+      size = size.lower().replace('b', '').strip().trim()
+
     file={
       'url'  : f.get('contentUrl', None),
-      'size' : f.get('contentSize', None),
+      'size' : int(size) if size else None,
       'name' : f.get('name', None)
     }
     files.append(file)

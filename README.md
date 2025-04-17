@@ -45,7 +45,7 @@ landing page:  https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7
 * schema.org/Dataset
   * https://dataverse.harvard.edu
   * https://dataverse.no
-  * https://snd.se/catalogue
+  * https://researchdata.se/catalogue
 * figshare
   * https://su.figshare.com
   * https://figshare.scilifelab.se
