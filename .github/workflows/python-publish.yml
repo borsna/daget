@@ -26,6 +26,8 @@ jobs:
         --user
     - name: Build a binary wheel and a source tarball
       run: python3 -m build
+    - name: Verify dist folder exists
+      run: if [ ! -d "dist" ]; then echo "dist folder not found"; exit 1; fi
     - name: Store the distribution packages
       uses: actions/upload-artifact@v3
       with:
