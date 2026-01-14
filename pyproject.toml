@@ -1,6 +1,6 @@
 [project]
 name = "daget"
-version = "0.6"
+version = "0.7"
 description = "Download dataset via DOI or landing page url"
 authors = [
     { name = "Olof Olsson", email = "borsna@gmail.com" }
